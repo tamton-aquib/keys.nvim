@@ -6,7 +6,7 @@ local plugin_loaded = false
 local config = {
     win_opts = {
         relative="editor", style="minimal", border="shadow",
-        row=1, col=1, width=25, height=3
+        row=vim.o.lines, col=vim.o.columns, width=25, height=3
     },
     enable_on_startup = false
 }
@@ -21,7 +21,7 @@ local spec_table = {
 
 --- Get the last 5 keys
 ---@param as_string boolean (get it as string or list)
----@return string | list
+---@return string | table
 M.current_keys = function(as_string)
     return as_string and table.concat(typed_letters) or typed_letters
 end
