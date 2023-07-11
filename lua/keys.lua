@@ -17,7 +17,10 @@ local spec_table = {
     [9] = " ", [13] = "⏎ ", [27] = "⎋", [32] = "␣",
     [127] = "", [8] = "⌫ ", -- Not working
 }
--- local spc = { ["<BS>"] = "⌫ " } -- TODO: test stuff with replace_term_codes()
+local spc = {
+    ["<BS>"] = "⌫ ",
+    ["<t_\253g>"] = " ", -- lua function
+} -- TODO: test stuff with replace_term_codes()
 
 --- Get the last 5 keys
 ---@param as_string boolean (get it as string or list)
@@ -51,6 +54,23 @@ local sanitize_key = function(key)
     if b <= 126 and b >= 33 then
         return key
     end
+
+    local translated = vim.fn.keytrans(key)
+
+    local special = spc[translated]
+    if special ~= nil then
+        return special
+    end
+
+    -- Mouse events
+    if translated:match('Left')
+        or translated:match('Mouse')
+        or translated:match('Scroll')
+    then
+        return "󰍽 "
+    end
+
+    return translated
 end
 
 local register_keys = function(key)
