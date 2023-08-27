@@ -19,8 +19,9 @@ local spec_table = {
 }
 local spc = {
     ["<BS>"] = "⌫ ",
-    ["<t_\253g>"] = " ", -- lua function
-} -- TODO: test stuff with replace_term_codes()
+    ["<t_\253g>"] = " ", -- lua function (is this really needed?)
+    ["<Cmd>"] = "",
+}
 
 --- Get the last 5 keys
 ---@param as_string boolean (get it as string or list)
@@ -32,7 +33,7 @@ end
 local create_float = function()
 	buf = vim.api.nvim_create_buf(false, true)
 	win = vim.api.nvim_open_win(buf, false, config.win_opts)
-	-- vim.api.nvim_win_set_option(win, "winhighlight", "Normal:Noice")
+	-- vim.api.nvim_win_set_option(win, "winhighlight", "Normal:KeysNormal")
 	vim.api.nvim_buf_set_option(buf, "filetype", "keys")
 end
 
@@ -86,10 +87,7 @@ local register_keys = function(key)
 end
 
 local start_registering = function()
-	vim.on_key(function(key)
-        -- if not win_loaded then return end
-        register_keys(key)
-    end, ns)
+    vim.on_key(register_keys)
     plugin_loaded = true
 end
 
