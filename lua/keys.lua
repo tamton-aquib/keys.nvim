@@ -12,14 +12,19 @@ local config = {
 }
 local win_loaded = false
 
+local k = vim.keycode or function(str)
+    return vim.api.nvim_replace_termcodes(str,true,true,true)
+end
+
 -- TODO: ⇧+ (for shift+), ⌥+ (for alt+) (also see: https://wincent.com/wiki/Unicode_representations_of_modifier_keys)
 local spec_table = {
-    [9] = " ", [13] = "⏎ ", [27] = "⎋", [32] = "␣",
-    [127] = "", [8] = "⌫ ", -- Not working
+    [k "<tab>"] = "⇥ ", [k "<cr>"] = "⏎ ", [k "<esc>"] = "⎋", [" "] = "␣",
+    [k "<del>"] = "⌦", [k "<bs>"] = "⌫",
+    [k "<up>"] = "↑", [k "<down>"] = "↓",[k "<left>"] = "←", [k "<right>"] = "→",
+    [k "<home>"] = "⇱", [k "<end>"] = "⇲",[k "<PageUp>"] = "⇞", [k "<PageDown>"] = "⇟",
 }
 local spc = {
-    ["<BS>"] = "⌫ ",
-    ["<t_\253g>"] = " ", -- lua function (is this really needed?)
+    ["<t_\253g>"] = " ", -- lua function
     ["<Cmd>"] = "",
 }
 
@@ -46,18 +51,25 @@ end
 
 -- local t = function(k) return vim.api.nvim_replace_termcodes(k, true, true, true) end
 local sanitize_key = function(key)
-    local b = key:byte()
     for k,v in pairs(spec_table) do
-        if b == k then
+        if key == k then
             return v
         end
     end
+    local b = key:byte()
     if b <= 126 and b >= 33 then
         return key
     end
 
     local translated = vim.fn.keytrans(key)
-
+    local match = translated:match("^C.-(.)>$")
+    if match then
+        local shift = translated:match("^<C[-]S[-].>$")
+        if not shift then
+            match = match:lower()
+        end
+        return  '⌃' .. match
+    end
     local special = spc[translated]
     if special ~= nil then
         return special
