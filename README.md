@@ -4,6 +4,9 @@ A neovim plugin that shows keystrokes. </br>
 Kind of like screen keys but inside neovim. <br />
 WIP, contains bugs.
 
+> [!TIP]
+> A better implementation of this plugin can be found at [screenkey.nvim](https://github.com/NStefan002/screenkey.nvim) by @NStefan002
+
 ![keys nvim](https://user-images.githubusercontent.com/77913442/166695082-93e0873a-3d14-4a90-911e-fa05de670078.gif)
 
 ### Installation
